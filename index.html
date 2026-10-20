@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="theme-color" content="#101828">
+  <title>Conecta — blog social</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="Conecta início"><span class="brand-mark">c.</span> conecta</a>
+    <div class="top-actions">
+      <span id="session-label" class="session-label">Você não está conectado</span>
+      <button id="logout-btn" class="btn btn-ghost hidden" type="button">Sair</button>
+    </div>
+  </header>
+
+  <main class="shell">
+    <section id="setup-warning" class="notice hidden" role="status"></section>
+
+    <section id="auth-view" class="auth-layout">
+      <div class="intro">
+        <p class="eyebrow">UMA COMUNIDADE, MUITAS IDEIAS</p>
+        <h1>Compartilhe o que<br><span>vale a conversa.</span></h1>
+        <p class="muted intro-copy">Publique pensamentos, descubra pessoas e transforme boas ideias em conversas.</p>
+        <div class="feature-pills"><span>✦ Publicações</span><span>↗ Comentários</span><span>◉ Imagens</span></div>
+      </div>
+      <div class="auth-card">
+        <div class="tabs" role="tablist" aria-label="Acesso">
+          <button class="tab active" id="login-tab" type="button">Entrar</button>
+          <button class="tab" id="signup-tab" type="button">Criar conta</button>
+        </div>
+        <form id="auth-form">
+          <label for="email">E-mail</label>
+          <input id="email" type="email" autocomplete="email" maxlength="254" placeholder="voce@exemplo.com" required>
+          <label for="password">Senha</label>
+          <input id="password" type="password" autocomplete="current-password" minlength="10" maxlength="128" placeholder="Mínimo de 10 caracteres" required>
+          <p id="password-hint" class="field-hint hidden">Use pelo menos 10 caracteres. Confirme seu e-mail para ativar a conta, se solicitado.</p>
+          <button id="auth-submit" class="btn btn-primary full" type="submit">Entrar</button>
+          <button id="reset-password" class="text-btn" type="button">Esqueci minha senha</button>
+          <p id="auth-message" class="message" role="status" aria-live="polite"></p>
+        </form>
+        <p class="fine-print">Nunca compartilhe sua senha. A confirmação de e-mail ajuda a proteger sua conta.</p>
+      </div>
+    </section>
+
+    <section id="app-view" class="app-layout hidden">
+      <aside class="sidebar">
+        <div class="side-profile"><div id="avatar" class="avatar">C</div><div><strong id="profile-email">Sua conta</strong><small>Comunidade Conecta</small></div></div>
+        <nav class="side-nav" aria-label="Navegação">
+          <button class="nav-item active" data-view="feed" type="button">⌂ <span>Feed</span></button>
+          <button class="nav-item" data-view="chat" type="button">◌ <span>Conversas</span></button>
+        </nav>
+        <div class="sidebar-note"><strong>Um espaço seguro</strong><p>Seja gentil, não publique dados privados e denuncie conteúdo abusivo fora desta demonstração.</p></div>
+      </aside>
+
+      <section class="main-column">
+        <div id="feed-view">
+          <div class="section-heading"><div><p class="eyebrow">SUA COMUNIDADE</p><h2>O que está acontecendo?</h2></div><button id="refresh-btn" class="btn btn-ghost" type="button">↻ Atualizar</button></div>
+          <form id="post-form" class="composer">
+            <label for="post-content">Comece uma conversa</label>
+            <textarea id="post-content" maxlength="3000" rows="4" placeholder="Compartilhe uma ideia, uma descoberta ou uma pergunta..." required></textarea>
+            <div class="composer-bottom">
+              <label class="upload-label" for="post-image">＋ Adicionar imagem <input id="post-image" type="file" accept="image/jpeg,image/png,image/webp" hidden></label>
+              <span id="image-name" class="field-hint">JPG, PNG ou WebP · até 5 MB</span>
+              <button class="btn btn-primary" type="submit">Publicar ↗</button>
+            </div>
+            <p id="post-message" class="message" role="status" aria-live="polite"></p>
+          </form>
+          <div id="feed-list" class="feed-list"><div class="empty-state">Entre na sua conta para ver as publicações.</div></div>
+        </div>
+
+        <div id="chat-view" class="hidden">
+          <div class="section-heading"><div><p class="eyebrow">EM TEMPO REAL</p><h2>Conversas</h2></div></div>
+          <div class="chat-card">
+            <div class="chat-notice">Sala comunitária: as mensagens ficam visíveis para membros autenticados. Não envie informações sensíveis.</div>
+            <div id="chat-messages" class="chat-messages"><div class="empty-state">Carregando mensagens…</div></div>
+            <form id="chat-form" class="chat-form"><label class="sr-only" for="chat-input">Sua mensagem</label><input id="chat-input" maxlength="1000" placeholder="Escreva uma mensagem..." required><button class="btn btn-primary" type="submit">Enviar</button></form>
+            <p id="chat-message" class="message" role="status"></p>
+          </div>
+        </div>
+      </section>
+      <aside class="right-rail">
+        <div class="rail-card"><p class="eyebrow">BOAS CONVERSAS</p><h3>Ideias crescem quando são compartilhadas.</h3><p class="muted">Comente com respeito, dê contexto e valorize diferentes pontos de vista.</p></div>
+        <div class="rail-card security-card"><span class="security-icon">✓</span><div><strong>Proteção por padrão</strong><p class="muted">Permissões no banco, e-mail único na autenticação e validação de arquivos.</p></div></div>
+      </aside>
+    </section>
+  </main>
+  <footer><span>© 2026 Conecta</span><span>Feito para boas conversas.</span></footer>
+
+  <dialog id="comments-dialog" class="comments-dialog">
+    <div class="dialog-head"><h3>Comentários</h3><button id="close-comments" class="icon-btn" type="button" aria-label="Fechar">×</button></div>
+    <div id="comments-list" class="comments-list"></div>
+    <form id="comment-form" class="comment-form"><label class="sr-only" for="comment-content">Seu comentário</label><textarea id="comment-content" maxlength="1500" rows="3" placeholder="Escreva um comentário..." required></textarea><button class="btn btn-primary" type="submit">Comentar</button><p id="comment-message" class="message" role="status"></p></form>
+  </dialog>
+</body>
+</html>
